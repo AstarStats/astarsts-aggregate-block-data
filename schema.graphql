@@ -1,0 +1,105 @@
+
+# Aggregate data struct
+# do not use as DB record
+type AggregateData @entity {
+
+  id: ID! 
+    
+  dailyTimestamp: String!
+  
+  monthlyTimestamp: String!
+
+  nativeExtinsicCount: BigInt!
+
+  nativeExtinsicSuccessCount: BigInt!
+
+  evmTransactionCount: BigInt!
+
+  evmTransactionSuccessCount: BigInt!
+
+  nativeGasUsedCount: BigInt!
+
+  evmGasUsedCount: BigInt!
+
+  nativeContractDeployed: [String]!
+
+  evmContractDeployed: [String]!
+
+  nativeContractDevelopers: [String]!
+
+  evmContractDevelopers: [String]!
+
+  nativeActiveUsers: [String]!
+
+  evmActiveUsers: [String]!
+
+  blockHeight: BigInt!
+  
+  createdAt: Date!
+}
+
+type DailyCount @entity {
+
+  id: ID! # daily timestamp
+  
+  nativeExtinsicCount: BigInt!
+
+  nativeExtinsicSuccessCount: BigInt!
+
+  evmTransactionCount: BigInt!
+
+  evmTransactionSuccessCount: BigInt!
+
+  nativeGasUsedCount: BigInt!
+
+  evmGasUsedCount: BigInt!
+
+  nativeContractDeployed: [String]!
+
+  evmContractDeployed: [String]!
+
+  nativeContractDevelopers: [String]!
+
+  evmContractDevelopers: [String]!
+
+  nativeActiveUsers: [String]!
+
+  evmActiveUsers: [String]!
+
+  blockHeight: BigInt!
+  
+  createdAt: Date!
+}
+
+type MonthlyCount @entity {
+
+  id: ID! # monthly timestamp
+  
+  nativeExtinsicCount: BigInt!
+
+  nativeExtinsicSuccessCount: BigInt!
+
+  evmTransactionCount: BigInt!
+
+  evmTransactionSuccessCount: BigInt!
+
+  nativeGasUsedCount: BigInt!
+
+  evmGasUsedCount: BigInt!
+
+  nativeContractDeployed: [String]!
+
+  evmContractDeployed: [String]!
+
+  nativeContractDevelopers: [String]!
+
+  evmContractDevelopers: [String]!
+
+  nativeActiveUsers: [String]!
+
+  evmActiveUsers: [String]!
+
+  blockHeight: BigInt!
+  
+  createdAt: Date!
+}

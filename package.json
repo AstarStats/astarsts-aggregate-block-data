@@ -1,0 +1,32 @@
+{
+  "name": "astarsts-aggregate-block-data",
+  "version": "0.0.1",
+  "description": "A astar network blockchain aggregation data.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -b",
+    "prepack": "rm -rf dist && npm build",
+    "test": "jest",
+    "codegen": "./node_modules/.bin/subql codegen"
+  },
+  "homepage": "https://github.com/AstarStats/astarsts-aggregate-block-data",
+  "repository": "github:AstarStats/astarsts-aggregate-block-data",
+  "files": [
+    "dist",
+    "schema.graphql",
+    "project.yaml"
+  ],
+  "author": "AstarStats",
+  "license": "Apache-2.0",
+  "resolutions": {
+    "@polkadot/api": "^7.12.1",
+    "@polkadot/types": "^7.12.1",
+    "@polkadot/util": "^8.5.1"
+  },
+  "devDependencies": {
+    "@subql/cli": "^0.16.2",
+    "@subql/contract-processors": "0.5.3",
+    "@subql/types": "^0.14.0",
+    "typescript": "^4.6.2"
+  }
+}

@@ -254,7 +254,7 @@ function createDailyCount(dailyStirng: string) :DailyCount{
   let entity = await MonthlyCount.get(_aggregateData.monthlyTimestamp);
   if (undefined === entity){
     //  {MonthlyTimestamp} is not registerd at database
-    entity = createDailyCount(_aggregateData.monthlyTimestamp);
+    entity = createMonthlyCount(_aggregateData.monthlyTimestamp);
   }
 
   entity.nativeExtinsicCount += _aggregateData.nativeExtinsicCount;

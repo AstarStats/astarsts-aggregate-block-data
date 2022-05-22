@@ -21,7 +21,8 @@
   "resolutions": {
     "@polkadot/api": "^7.12.1",
     "@polkadot/types": "^7.12.1",
-    "@polkadot/util": "^8.5.1"
+    "@polkadot/util": "^8.5.1",
+    "ipfs-unixfs": "6.0.6"
   },
   "devDependencies": {
     "@subql/node": "^1.0.0",

@@ -1,6 +1,6 @@
 {
   "name": "astarsts-aggregate-block-data",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A astar network blockchain aggregation data.",
   "main": "dist/index.js",
   "scripts": {
@@ -24,6 +24,8 @@
     "@polkadot/util": "^8.5.1"
   },
   "devDependencies": {
+    "@subql/node": "^1.0.0",
+    "@subql/query": "^1.0.0",
     "@subql/cli": "^0.16.2",
     "@subql/contract-processors": "0.5.3",
     "@subql/types": "^0.14.0",

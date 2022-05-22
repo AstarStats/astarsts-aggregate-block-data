@@ -55,49 +55,22 @@ type DailyCount @entity {
   evmGasUsedCount: BigInt!
 
   nativeContractDeployed: [String]!
+  nativeContractDeployedCount: BigInt!
 
   evmContractDeployed: [String]!
+  evmContractDeployedCount: BigInt!
 
   nativeContractDevelopers: [String]!
+  nativeContractDevelopersCount: BigInt!
 
   evmContractDevelopers: [String]!
+  evmContractDevelopersCount: BigInt!
 
   nativeActiveUsers: [String]!
+  nativeActiveUsersCount: BigInt!
 
   evmActiveUsers: [String]!
-
-  blockHeight: BigInt!
-  
-  createdAt: Date!
-}
-
-type MonthlyCount @entity {
-
-  id: ID! # monthly timestamp
-  
-  nativeExtinsicCount: BigInt!
-
-  nativeExtinsicSuccessCount: BigInt!
-
-  evmTransactionCount: BigInt!
-
-  evmTransactionSuccessCount: BigInt!
-
-  nativeGasUsedCount: BigInt!
-
-  evmGasUsedCount: BigInt!
-
-  nativeContractDeployed: [String]!
-
-  evmContractDeployed: [String]!
-
-  nativeContractDevelopers: [String]!
-
-  evmContractDevelopers: [String]!
-
-  nativeActiveUsers: [String]!
-
-  evmActiveUsers: [String]!
+  evmActiveUsersCount: BigInt!
 
   blockHeight: BigInt!
   

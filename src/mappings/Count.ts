@@ -1,5 +1,4 @@
 import {DailyCount} from "../types/models/DailyCount";
-import {MonthlyCount} from "../types/models/MonthlyCount";
 import {AggregateData} from "../types/models/AggregateData";
 import {isHexString} from '@ethersproject/bytes';
 
@@ -18,12 +17,10 @@ export async function handleBlock(thisBlock: SubstrateBlock): Promise<void> {
   const _aggregateData = await extractAggregateData(thisBlock);
 
   const recordDailyCount = aggregateAsDailyCount(_aggregateData);
-  const recordMonthlyCount = aggregateAsMonthlyCount(_aggregateData);
 
   await Promise.all(
     [
       (await recordDailyCount).save(),
-      (await recordMonthlyCount).save()
     ]
   );
 }
@@ -38,7 +35,6 @@ export async function handleBlock(thisBlock: SubstrateBlock): Promise<void> {
   let _aggregateData = new AggregateData("__");
   _aggregateData.createdAt = thisBlock.timestamp;
   _aggregateData.dailyTimestamp = _aggregateData.createdAt.toISOString().slice(0,10);
-  _aggregateData.monthlyTimestamp = _aggregateData.createdAt.toISOString().slice(0,7);
   
   const _wrapedExtinsics = wrapExtrinsics(thisBlock);
   const _nativeTransaction = _wrapedExtinsics.filter((ext) => ext.extrinsic.method.section !== 'ethereum' || ext.extrinsic.method.method !== 'transact');
@@ -178,43 +174,54 @@ export async function handleBlock(thisBlock: SubstrateBlock): Promise<void> {
 
   entity.nativeGasUsedCount += _aggregateData.nativeGasUsedCount;
   entity.evmGasUsedCount += _aggregateData.evmGasUsedCount;
-
+  
   _aggregateData.nativeContractDeployed.forEach(nativeContractDeployed => {
     if(undefined === entity.nativeContractDeployed.find((addr)=> addr === nativeContractDeployed)){
       // no duplicate
       entity.nativeContractDeployed.push(nativeContractDeployed);
     }
   })
+  entity.nativeContractDeployedCount = BigInt(entity.nativeContractDeployed.length);
+
   _aggregateData.evmContractDeployed.forEach(evmContractDeployed => {
     if(undefined === entity.evmContractDeployed.find((addr)=> addr === evmContractDeployed)){
       // no duplicate
       entity.evmContractDeployed.push(evmContractDeployed);
     }
   })
+  entity.evmContractDeployedCount = BigInt(entity.evmContractDeployed.length);
+  
   _aggregateData.nativeContractDevelopers.forEach(nativeContractDevelopers => {
     if(undefined === entity.nativeContractDevelopers.find((addr)=> addr === nativeContractDevelopers)){
       // no duplicate
       entity.nativeContractDevelopers.push(nativeContractDevelopers);
     }
   })
+  entity.nativeContractDevelopersCount = BigInt(entity.nativeContractDevelopers.length);
+
   _aggregateData.evmContractDevelopers.forEach(evmContractDevelopers => {
     if(undefined === entity.evmContractDevelopers.find((addr)=> addr === evmContractDevelopers)){
       // no duplicate
       entity.evmContractDevelopers.push(evmContractDevelopers);
     }
   })
+  entity.evmContractDevelopersCount = BigInt(entity.evmContractDevelopers.length);
+
   _aggregateData.nativeActiveUsers.forEach(nativeActiveUsers => {
     if(undefined === entity.nativeActiveUsers.find((addr)=> addr === nativeActiveUsers)){
       // no duplicate
       entity.nativeActiveUsers.push(nativeActiveUsers);
     }
   })
+  entity.nativeActiveUsersCount = BigInt(entity.nativeActiveUsers.length);
+
   _aggregateData.evmActiveUsers.forEach(evmActiveUsers => {
     if(undefined === entity.evmActiveUsers.find((addr)=> addr === evmActiveUsers)){
       // no duplicate
       entity.evmActiveUsers.push(evmActiveUsers);
     }
   })
+  entity.evmActiveUsersCount = BigInt(entity.evmActiveUsers.length);
 
   entity.blockHeight = _aggregateData.blockHeight;
   entity.createdAt = _aggregateData.createdAt;
@@ -236,97 +243,17 @@ function createDailyCount(dailyStirng: string) :DailyCount{
   entity.nativeGasUsedCount = BigInt(0);
   entity.evmGasUsedCount = BigInt(0);
   entity.nativeContractDeployed = [];
+  entity.nativeContractDeployedCount = BigInt(0);
   entity.evmContractDeployed = [];
+  entity.evmContractDeployedCount = BigInt(0);
   entity.nativeContractDevelopers = [];
+  entity.nativeContractDevelopersCount = BigInt(0);
   entity.evmContractDevelopers = [];
+  entity.evmContractDevelopersCount = BigInt(0);
   entity.nativeActiveUsers = [];
+  entity.nativeActiveUsersCount = BigInt(0);
   entity.evmActiveUsers = [];
-  
-  return entity
-}
-
-/**
- * 
- * @param _aggregateData daily data of constructed from new block
- * @returns sum of {_aggregateData} and database (except duplicate data)
- */
- async function aggregateAsMonthlyCount(_aggregateData: AggregateData) :Promise<MonthlyCount>{
-  let entity = await MonthlyCount.get(_aggregateData.monthlyTimestamp);
-  if (undefined === entity){
-    //  {MonthlyTimestamp} is not registerd at database
-    entity = createMonthlyCount(_aggregateData.monthlyTimestamp);
-  }
-
-  entity.nativeExtinsicCount += _aggregateData.nativeExtinsicCount;
-  entity.nativeExtinsicSuccessCount += _aggregateData.nativeExtinsicSuccessCount;
-  entity.evmTransactionCount += _aggregateData.evmTransactionCount;
-  entity.evmTransactionSuccessCount += _aggregateData.evmTransactionSuccessCount;
-
-  entity.nativeGasUsedCount += _aggregateData.nativeGasUsedCount;
-  entity.evmGasUsedCount += _aggregateData.evmGasUsedCount;
-
-  _aggregateData.nativeContractDeployed.forEach(nativeContractDeployed => {
-    if(undefined === entity.nativeContractDeployed.find((addr)=> addr === nativeContractDeployed)){
-      // no duplicate
-      entity.nativeContractDeployed.push(nativeContractDeployed);
-    }
-  })
-  _aggregateData.evmContractDeployed.forEach(evmContractDeployed => {
-    if(undefined === entity.evmContractDeployed.find((addr)=> addr === evmContractDeployed)){
-      // no duplicate
-      entity.evmContractDeployed.push(evmContractDeployed);
-    }
-  })
-  _aggregateData.nativeContractDevelopers.forEach(nativeContractDevelopers => {
-    if(undefined === entity.nativeContractDevelopers.find((addr)=> addr === nativeContractDevelopers)){
-      // no duplicate
-      entity.nativeContractDevelopers.push(nativeContractDevelopers);
-    }
-  })
-  _aggregateData.evmContractDevelopers.forEach(evmContractDevelopers => {
-    if(undefined === entity.evmContractDevelopers.find((addr)=> addr === evmContractDevelopers)){
-      // no duplicate
-      entity.evmContractDevelopers.push(evmContractDevelopers);
-    }
-  })
-  _aggregateData.nativeActiveUsers.forEach(nativeActiveUsers => {
-    if(undefined === entity.nativeActiveUsers.find((addr)=> addr === nativeActiveUsers)){
-      // no duplicate
-      entity.nativeActiveUsers.push(nativeActiveUsers);
-    }
-  })
-  _aggregateData.evmActiveUsers.forEach(evmActiveUsers => {
-    if(undefined === entity.evmActiveUsers.find((addr)=> addr === evmActiveUsers)){
-      // no duplicate
-      entity.evmActiveUsers.push(evmActiveUsers);
-    }
-  })
-
-  entity.blockHeight = _aggregateData.blockHeight;
-  entity.createdAt = _aggregateData.createdAt;
-
-  return entity
-}
-
-/**
- * 
- * @param monthlyStirng key of new entity
- * @returns new entity
- */
-function createMonthlyCount(monthlyStirng: string) :MonthlyCount{
-  const entity = new MonthlyCount(monthlyStirng);
-  entity.nativeExtinsicCount = BigInt(0);
-  entity.nativeExtinsicSuccessCount = BigInt(0);
-  entity.evmTransactionCount = BigInt(0);
-  entity.evmTransactionSuccessCount = BigInt(0);
-  entity.nativeGasUsedCount = BigInt(0);
-  entity.evmGasUsedCount = BigInt(0);
-  entity.nativeContractDeployed = [];
-  entity.evmContractDeployed = [];
-  entity.nativeContractDevelopers = [];
-  entity.evmContractDevelopers = [];
-  entity.nativeActiveUsers = [];
-  entity.evmActiveUsers = [];
+  entity.evmActiveUsersCount = BigInt(0);
   
   return entity
 }
